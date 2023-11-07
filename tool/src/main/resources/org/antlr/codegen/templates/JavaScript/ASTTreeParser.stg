@@ -14,8 +14,8 @@ group ASTTreeParser;
 /** Add a variable to track last element matched */
 ruleDeclarations() ::= <<
 <super.ruleDeclarations()>
-var _first_0 = null;
-var _last = null;<\n>
+let _first_0 = null;
+let _last = null;<\n>
 >>
 
 /** What to emit when there is no rewrite rule.  For auto build
@@ -38,10 +38,10 @@ tree(root, actionsAfterRoot, children, nullableChildList,
      enclosingTreeLevel, treeLevel) ::= <<
 _last = this.input.LT(1);
 {
-var _save_last_<treeLevel> = _last;
-var _first_<treeLevel> = null;
+let _save_last_<treeLevel> = _last;
+let _first_<treeLevel> = null;
 <if(!rewriteMode)>
-var root_<treeLevel> = this.adaptor.nil();
+let root_<treeLevel> = this.adaptor.nil();
 <endif>
 <root:element()>
 <if(rewriteMode)>
@@ -82,13 +82,13 @@ _last = this.input.LT(1);
 >>
 
 /** ID auto construct */
-tokenRef(token,label,elementIndex,terminalOptions) ::= <<
+tokenRef(token,label,elementIndex,hetero) ::= <<
 _last = this.input.LT(1);
 <super.tokenRef(...)>
 <if(!rewriteMode)>
 <if(backtracking)>if ( <actions.(actionScope).synpredgate> ) {<endif>
-<if(terminalOptions.node)>
-<label>_tree = new <terminalOptions.node>(<label>);
+<if(hetero)>
+<label>_tree = new <hetero>(<label>);
 <else>
 <label>_tree = this.adaptor.dupNode(<label>);
 <endif><\n>
@@ -101,19 +101,19 @@ if ( !_first_<treeLevel> ) _first_<treeLevel> = <label>;
 >>
 
 /** label+=TOKEN auto construct */
-tokenRefAndListLabel(token,label,elementIndex,terminalOptions) ::= <<
+tokenRefAndListLabel(token,label,elementIndex,hetero) ::= <<
 <tokenRef(...)>
 <listLabel(elem=label,...)>
 >>
 
 /** ^(ID ...) auto construct */
-tokenRefRuleRoot(token,label,elementIndex,terminalOptions) ::= <<
+tokenRefRuleRoot(token,label,elementIndex,hetero) ::= <<
 _last = this.input.LT(1);
 <super.tokenRef(...)>
 <if(!rewriteMode)>
 <if(backtracking)>if ( <actions.(actionScope).synpredgate> ) {<endif>
-<if(terminalOptions.node)>
-<label>_tree = new <terminalOptions.node>(<label>);
+<if(hetero)>
+<label>_tree = new <hetero>(<label>);
 <else>
 <label>_tree = this.adaptor.dupNode(<label>);
 <endif><\n>
@@ -123,20 +123,20 @@ root_<treeLevel> = this.adaptor.becomeRoot(<label>_tree, root_<treeLevel>);
 >>
 
 /** Match ^(label+=TOKEN ...) auto construct */
-tokenRefRuleRootAndListLabel(token,label,elementIndex,terminalOptions) ::= <<
+tokenRefRuleRootAndListLabel(token,label,elementIndex,hetero) ::= <<
 <tokenRefRuleRoot(...)>
 <listLabel(elem=label,...)>
 >>
 
 // SET AST
 
-matchSet(s,label,terminalOptions,elementIndex,postmatchCode) ::= <<
+matchSet(s,label,hetero,elementIndex,postmatchCode) ::= <<
 _last = this.input.LT(1);
 <super.matchSet(..., postmatchCode={
 <if(!rewriteMode)>
 <if(backtracking)>if ( <actions.(actionScope).synpredgate> ) {<endif>
-<if(terminalOptions.node)>
-<label>_tree = new <terminalOptions.node>(<label>);
+<if(hetero)>
+<label>_tree = new <hetero>(<label>);
 <else>
 <label>_tree = this.adaptor.dupNode(<label>);
 <endif><\n>
@@ -147,7 +147,7 @@ this.adaptor.addChild(root_<treeLevel>, <label>_tree);
 )>
 >>
 
-matchRuleBlockSet(s,label,terminalOptions,elementIndex,postmatchCode,treeLevel="0") ::= <<
+matchRuleBlockSet(s,label,hetero,elementIndex,postmatchCode,treeLevel="0") ::= <<
 <matchSet(...)>
 <noRewrite()> <! set return tree !>
 >>
@@ -157,12 +157,12 @@ _last = this.input.LT(1);
 <super.matchSet(...)>
 >>
 
-matchSetRuleRoot(s,label,terminalOptions,elementIndex,debug) ::= <<
+matchSetRuleRoot(s,label,hetero,elementIndex,debug) ::= <<
 <super.matchSet(..., postmatchCode={
 <if(!rewriteMode)>
 <if(backtracking)>if ( <actions.(actionScope).synpredgate> ) {<endif>
-<if(terminalOptions.node)>
-<label>_tree = new <terminalOptions.node>(<label>);
+<if(hetero)>
+<label>_tree = new <hetero>(<label>);
 <else>
 <label>_tree = this.adaptor.dupNode(<label>);
 <endif><\n>
@@ -235,9 +235,9 @@ _last = this.input.LT(1);
 /** Streams for token refs are tree nodes now; override to
  *  change nextToken to nextNode.
  */
-createRewriteNodeFromElement(token,terminalOptions,scope) ::= <<
-<if(terminalOptions.node)>
-new <terminalOptions.node>(stream_<token>.nextNode())
+createRewriteNodeFromElement(token,hetero,scope) ::= <<
+<if(hetero)>
+new <hetero>(stream_<token>.nextNode())
 <else>
 stream_<token>.nextNode()
 <endif>
