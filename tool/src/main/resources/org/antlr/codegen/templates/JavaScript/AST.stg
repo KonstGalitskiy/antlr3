@@ -63,9 +63,9 @@ ruleLabelDefs() ::= <<
 <ruleDescriptor.tokenLabels:{let <it.label.text>_tree=null;}; separator="\n">
 <ruleDescriptor.tokenListLabels:{let <it.label.text>_tree=null;}; separator="\n">
 <ruleDescriptor.allTokenRefsInAltsWithRewrites
-    :{var stream_<it>=new org.antlr.runtime.tree.RewriteRuleTokenStream(this.adaptor,"token <it>");}; separator="\n">
+    :{let stream_<it>=new org.antlr.runtime.tree.RewriteRuleTokenStream(this.adaptor,"token <it>");}; separator="\n">
 <ruleDescriptor.allRuleRefsInAltsWithRewrites
-    :{var stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"rule <it>");}; separator="\n">
+    :{let stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"rule <it>");}; separator="\n">
 >>
 
 /** When doing auto AST construction, we must define some variables;
@@ -191,27 +191,27 @@ this.input.replaceChildren(this.adaptor.getParent(retval.start),
 
 rewriteCodeLabels() ::= <<
 <referencedTokenLabels
-    :{var stream_<it>=new org.antlr.runtime.tree.RewriteRule<rewriteElementType>Stream(this.adaptor,"token <it>",<it>);};
+    :{let stream_<it>=new org.antlr.runtime.tree.RewriteRule<rewriteElementType>Stream(this.adaptor,"token <it>",<it>);};
     separator="\n"
 >
 <referencedTokenListLabels
-    :{var stream_<it>=new org.antlr.runtime.tree.RewriteRule<rewriteElementType>Stream(this.adaptor,"token <it>", list_<it>);};
+    :{let stream_<it>=new org.antlr.runtime.tree.RewriteRule<rewriteElementType>Stream(this.adaptor,"token <it>", list_<it>);};
     separator="\n"
 >
 <referencedWildcardLabels
-    :{var stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"wildcard <it>",<it>);};
+    :{let stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"wildcard <it>",<it>);};
     separator="\n"
 >
 <referencedWildcardListLabels
-    :{var stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"wildcard <it>",list_<it>);};
+    :{let stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"wildcard <it>",list_<it>);};
     separator="\n"
 >
-<referencedRuleLabels
+<referencedRuleLabels    
     :{var stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"token <it>",<it>!=null?<it>.tree:null);};
     separator="\n"
 >
 <referencedRuleListLabels
-    :{var stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"token <it>",list_<it>);};
+    :{let stream_<it>=new org.antlr.runtime.tree.RewriteRuleSubtreeStream(this.adaptor,"token <it>",list_<it>);};
     separator="\n"
 >
 >>
@@ -279,7 +279,7 @@ rewriteEmptyAlt() ::= "root_0 = null;"
 rewriteTree(root,children,description,enclosingTreeLevel,treeLevel) ::= <<
 // <fileName>:<description>
 {
-var root_<treeLevel> = this.adaptor.nil();
+let root_<treeLevel> = this.adaptor.nil();
 <root:rewriteElement()>
 <children:rewriteElement()>
 this.adaptor.addChild(root_<enclosingTreeLevel>, root_<treeLevel>);
